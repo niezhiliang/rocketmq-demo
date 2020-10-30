@@ -41,10 +41,13 @@ public class SimpleMessageTest {
 
         Message message1 = new Message(TOPIC,"simple sync first message".getBytes());
         Message message2 = new Message(TOPIC,"simple sync second message".getBytes());
+        Message message3 = new Message(TOPIC,"simple sync thired message".getBytes());
 
-        SendResult sendResult = producer.send(Arrays.asList(message1, message2));
+        for (int i = 1 ; i < 10 ; i++ ){
+            SendResult sendResult = producer.send(Arrays.asList(message1, message2,message3));
+            System.out.println(sendResult);
+        }
 
-        System.out.println(sendResult);
         //producer.shutdown();
         System.out.println("已经停机");
 
@@ -61,11 +64,15 @@ public class SimpleMessageTest {
         consumer.setNamesrvAddr(NAMESRV_ADDR);
         //第一个参数表示：订阅的topic   第二个参数表示消息过滤器：* 表示接收所有信息 一个消费者订阅一个topic
         consumer.subscribe(TOPIC,"*");
+        //最大消费线程数
+        consumer.setConsumeThreadMax(3);
+        //最小消费线程数
+        consumer.setConsumeThreadMin(2);
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> list, ConsumeConcurrentlyContext consumeConcurrentlyContext) {
                 for (MessageExt messageExt : list) {
-                    System.out.println("收到的message:"+new String(messageExt.getBody()));
+                    System.out.println("ThreadId:"+ Thread.currentThread().getName() +"收到的message:"+new String(messageExt.getBody()));
                 }
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
