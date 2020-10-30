@@ -46,7 +46,8 @@ public class SeletorTopicQueueMessageTest {
                                            Message msg,
                                            Object arg) {
                     //固定向topic的第一个queue发送消息
-                    return mqs.get(0);
+                    MessageQueue queue = mqs.get(0);
+                    return queue;
                 }
             },0,2000);
         }
@@ -57,8 +58,9 @@ public class SeletorTopicQueueMessageTest {
             producer.send(message, new MessageQueueSelector() {
                 @Override
                 public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
-                    //固定向topic的第一个queue发送消息
-                    return mqs.get(1);
+                    //固定向topic的第二个queue发送消息
+                    MessageQueue queue = mqs.get(1);
+                    return queue;
                 }
             },0,2000);
         }
