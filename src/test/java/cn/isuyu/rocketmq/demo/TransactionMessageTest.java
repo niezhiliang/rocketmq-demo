@@ -1,6 +1,5 @@
 package cn.isuyu.rocketmq.demo;
 
-import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.LocalTransactionState;
 import org.apache.rocketmq.client.producer.TransactionListener;
 import org.apache.rocketmq.client.producer.TransactionMQProducer;
@@ -12,6 +11,8 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author : niezl
  * @date : 2020/10/27
@@ -21,7 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class TransactionMessageTest {
 
     @Test
-    public void simpleMessageProducer() throws MQClientException {
+    public void simpleMessageProducer() throws Exception {
         TransactionMQProducer producer = new TransactionMQProducer("testGroup");
         producer.setNamesrvAddr("120.78.149.247:9876");
 
@@ -35,6 +36,7 @@ public class TransactionMessageTest {
                 try {
                     System.out.println("try code exec");
                 } catch (Exception e) {
+                    //回滚
                     return LocalTransactionState.ROLLBACK_MESSAGE;
                 }
                 return LocalTransactionState.COMMIT_MESSAGE;
@@ -61,6 +63,7 @@ public class TransactionMessageTest {
 
         System.out.println(sendResult);
 
+        TimeUnit.SECONDS.sleep(60);
         producer.shutdown();
 
     }

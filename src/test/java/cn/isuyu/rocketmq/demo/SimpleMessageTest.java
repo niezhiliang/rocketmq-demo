@@ -10,9 +10,6 @@ import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,24 +18,29 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author : niezl
  * @date : 2020/10/27
+ * 普通消息
  */
-@SpringBootTest
-@RunWith(SpringRunner.class)
 public class SimpleMessageTest {
 
+    private static final String NAMESRV_ADDR = "120.78.149.247:9876";
+
+    private static final String PRODUCER_GROUP = "test-group";
+
+    private static final String TOPIC = "simple-topic";
+
     /**
-     *  普通消息发送
+     *  普通消息同步发送
      * @throws Exception
      */
     @Test
     public void simpleMessageProducer() throws Exception {
-        DefaultMQProducer producer = new DefaultMQProducer("test-group");
-        producer.setNamesrvAddr("120.78.149.247:9876");
+        DefaultMQProducer producer = new DefaultMQProducer(PRODUCER_GROUP);
+        producer.setNamesrvAddr(NAMESRV_ADDR);
 
         producer.start();
 
-        Message message1 = new Message("simple-topic","simple first message".getBytes());
-        Message message2 = new Message("simple-topic","simple second message".getBytes());
+        Message message1 = new Message(TOPIC,"simple sync first message".getBytes());
+        Message message2 = new Message(TOPIC,"simple sync second message".getBytes());
 
         SendResult sendResult = producer.send(Arrays.asList(message1, message2));
 
@@ -55,10 +57,10 @@ public class SimpleMessageTest {
      */
     @Test
     public void simpleMessageConsumer() throws Exception {
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("test-group");
-        consumer.setNamesrvAddr("120.78.149.247:9876");
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(PRODUCER_GROUP);
+        consumer.setNamesrvAddr(NAMESRV_ADDR);
         //第一个参数表示：订阅的topic   第二个参数表示消息过滤器：* 表示接收所有信息 一个消费者订阅一个topic
-        consumer.subscribe("simple-topic","*");
+        consumer.subscribe(TOPIC,"*");
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> list, ConsumeConcurrentlyContext consumeConcurrentlyContext) {
