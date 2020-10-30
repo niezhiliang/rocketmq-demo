@@ -37,9 +37,16 @@ public class OneWayMessageTest {
         producer.setNamesrvAddr(NAMESRV_ADDR);
         producer.start();
         Message message = new Message(TOPIC,TAG,"oneway first message".getBytes());
+        //延时发送  默认1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
+        message.setDelayTimeLevel(2);
+
+        Message message2 = new Message(TOPIC,TAG,"oneway second message".getBytes());
+        message2.setDelayTimeLevel(3);
         // 单向消息
         //网络不确定的时候发送
         producer.sendOneway(message);
+        producer.sendOneway(message2);
+        TimeUnit.SECONDS.sleep(20);
     }
 
     @Test
@@ -57,7 +64,7 @@ public class OneWayMessageTest {
             }
         });
         consumer.start();
-        TimeUnit.SECONDS.sleep(5);
+        TimeUnit.SECONDS.sleep(30);
     }
 
 }
