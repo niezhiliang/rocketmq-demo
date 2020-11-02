@@ -35,9 +35,18 @@ public class TransactionMessageTest {
         producer.setNamesrvAddr(NAMESRV_ADDR);
 
         producer.setTransactionListener(new TransactionListener() {
+
+            /**
+             * 执行本地事务，如果执行成功返回COMMIT_MESSAGE
+             * broker会将消息发送出去，
+             * 本地实物执行失败的话，broker会将消息删除
+             * @param message
+             * @param o
+             * @return
+             */
             @Override
             public LocalTransactionState executeLocalTransaction(Message message, Object o) {
-                System.out.println("------------executeLocalTransaction-------------");
+                System.out.println("------------执行本地事务-------------");
                 System.out.println("message:"+new String(message.getBody()));
                 System.out.println("messageId:"+message.getTransactionId());
 
@@ -47,12 +56,19 @@ public class TransactionMessageTest {
                     //回滚
                     return LocalTransactionState.ROLLBACK_MESSAGE;
                 }
-                return LocalTransactionState.COMMIT_MESSAGE;
+                return LocalTransactionState.ROLLBACK_MESSAGE;
             }
 
+            /**
+             * broker长时间没收到确认信息
+             * 会回调接口来查看本地事务的执行情况
+             * @param messageExt
+             * @return
+             */
             @Override
             public LocalTransactionState checkLocalTransaction(MessageExt messageExt) {
-                System.out.println("--------------------checkLocalTransaction-----------------------");
+                //broker长时间没收到本地事务返回的状态，会主动回调询问事务状态 时间间隔为messageDelay设置的
+                System.out.println("--------------------Broker执行回调检查本地事务状态-----------------------");
                 System.out.println("message:"+new String(messageExt.getBody()));
                 System.out.println("messageId:"+new String(messageExt.getTransactionId()));
                 //回滚信息
