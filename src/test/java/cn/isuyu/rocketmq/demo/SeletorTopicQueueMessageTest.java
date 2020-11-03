@@ -6,6 +6,7 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.MessageQueueSelector;
+import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByHash;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.common.message.MessageQueue;
@@ -54,20 +55,13 @@ public class SeletorTopicQueueMessageTest {
 
         for (int i = 0; i < 20; i++) {
             Message message = new Message(TOPIC,TAG,("hello2 " + i).getBytes());
-
-            producer.send(message, new MessageQueueSelector() {
-                @Override
-                public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
-                    //固定向topic的第二个queue发送消息
-                    MessageQueue queue = mqs.get(1);
-                    return queue;
-                }
-            },0,2000);
+            //这里的SelectMessageQueueByHash 实际上也是实现了MessageQueueSelector接口
+            producer.send(message, new SelectMessageQueueByHash(),0);
         }
     }
 
     /**
-     * 顺序消费
+     * 顺序消费,这个会延迟消费 需要多等一会
      * @throws Exception
      */
     @Test
@@ -87,6 +81,6 @@ public class SeletorTopicQueueMessageTest {
             }
         });
         consumer.start();
-        TimeUnit.SECONDS.sleep(10);
+        TimeUnit.SECONDS.sleep(120);
     }
 }
