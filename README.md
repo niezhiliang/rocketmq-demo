@@ -1,6 +1,6 @@
 ## RocketMQ
 
-[starter整合SpringBoot](https://github.com/niezhiliang/rocketmq-demo/tree/master/boot-rocketmq)[starter整合SpringBoot)
+[starter整合SpringBoot](https://github.com/niezhiliang/rocketmq-demo/tree/master/boot-rocketmq)
 
 [手动整合SpringBoot](https://github.com/niezhiliang/rocketmq-demo/tree/master/my-rocketmq)
 
