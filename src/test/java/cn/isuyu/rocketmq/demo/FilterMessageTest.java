@@ -36,8 +36,8 @@ public class FilterMessageTest {
         DefaultMQProducer producer = new DefaultMQProducer(PRODUCER_GROUP);
         producer.setNamesrvAddr(NAMESRV_ADDR);
         producer.start();
-        for (int i = 1; i <= 100; i++) {
-            Message message = new Message(TOPIC,TAG,"key"+i,("batch message no:"+i).getBytes());
+        for (int i = 1; i <= 1; i++) {
+            Message message = new Message(TOPIC,"key"+i,("batch message no:"+i).getBytes());
             message.putUserProperty("num",String.valueOf(i));
             producer.send(message);
         }
@@ -54,7 +54,7 @@ public class FilterMessageTest {
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(PRODUCER_GROUP);
         consumer.setNamesrvAddr(NAMESRV_ADDR);
         MessageSelector selector = MessageSelector.bySql("num > 16 and num < 30");
-        consumer.subscribe(TOPIC,selector);
+        consumer.subscribe("testMsg","*");
         consumer.registerMessageListener(new MessageListenerConcurrently() {
             @Override
             public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {

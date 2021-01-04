@@ -1,0 +1,5 @@
+rocketmq:
+  name-server: 127.0.0.1:987
+  producer:
+    group: boot-group
+  topic: testMsg

@@ -24,7 +24,7 @@ public class SimpleMessageTest {
 
     private static final String NAMESRV_ADDR = "120.78.149.247:9876";
 
-    private static final String PRODUCER_GROUP = "test-group";
+    private static final String PRODUCER_GROUP = "dev-group";
 
     private static final String TOPIC = "simple-topic";
 
@@ -43,8 +43,8 @@ public class SimpleMessageTest {
         Message message2 = new Message(TOPIC,"simple sync second message".getBytes());
         Message message3 = new Message(TOPIC,"simple sync thired message".getBytes());
 
-        for (int i = 1 ; i < 10 ; i++ ){
-            SendResult sendResult = producer.send(Arrays.asList(message1, message2,message3));
+        for (int i = 1 ; i < 2 ; i++ ){
+            SendResult sendResult = producer.send(Arrays.asList(message1,message2));
             System.out.println(sendResult);
         }
 
@@ -60,7 +60,7 @@ public class SimpleMessageTest {
      */
     @Test
     public void simpleMessageConsumer() throws Exception {
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(PRODUCER_GROUP);
+        DefaultMQPushConsumer  consumer = new DefaultMQPushConsumer(PRODUCER_GROUP);
         consumer.setNamesrvAddr(NAMESRV_ADDR);
         //第一个参数表示：订阅的topic   第二个参数表示消息过滤器：* 表示接收所有信息 一个消费者订阅一个topic
         consumer.subscribe(TOPIC,"*");
