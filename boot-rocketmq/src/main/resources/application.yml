@@ -1,5 +1,16 @@
 rocketmq:
-  name-server: 127.0.0.1:987
+  #nameserver地址
+  name-server: 127.0.0.1:9876
   producer:
+    #生产者组
     group: boot-group
+    #消息发送超时
+    send-message-timeout: 300000
+    compress-message-body-threshold: 4096
+    #消息最大大小  默认最大4M
+    max-message-size: 4194304
+    #失败重投间隔时间
+    retry-times-when-send-async-failed: 0
+    #重试重投次数
+    retry-times-when-send-failed: 2
   topic: testMsg

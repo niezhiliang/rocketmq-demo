@@ -34,7 +34,11 @@ public class BootApplication {
     @GetMapping(value = "send")
     public String send() {
         for (int i = 0; i < 5; i++) {
-            Message<String> message = MessageBuilder.withPayload("hello boot :" + num.addAndGet(1)).build();
+            Message<String> message = MessageBuilder.withPayload("hello boot :" + num.addAndGet(1))
+                    //添加消息头信息（支持自定义属性）
+                    .setHeader("TAGS","*")
+                    .setHeader("num",i)
+                    .build();
             rocketMQTemplate.send("testMsg",message);
         }
         return "ok";

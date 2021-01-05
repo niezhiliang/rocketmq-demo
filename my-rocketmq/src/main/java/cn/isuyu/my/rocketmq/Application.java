@@ -26,6 +26,11 @@ public class Application {
         SpringApplication.run(Application.class);
     }
 
+    /**
+     * 消息发送
+     * @return
+     * @throws Exception
+     */
     @GetMapping(value = "send")
     public String sendMsg() throws Exception {
         for (int i = 0; i < 5; i++) {
